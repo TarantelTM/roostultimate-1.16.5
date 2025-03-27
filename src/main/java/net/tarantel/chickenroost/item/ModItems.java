@@ -106,7 +106,13 @@ public class ModItems {
 
     //region Tools
     //public static final RegistryObject<Item> CHICKEN_SCANNER = ITEMS.register("chicken_scanner", () -> new ChickenScannerItem());
-    //public static final RegistryObject<Item> CHICKEN_STICK = ITEMS.register("chicken_stick", () -> new AnimatedChickenStick(new Item.Properties()));
+    /*public static final RegistryObject<Item> CHICKEN_STICK = ITEMS.register("chicken_stick", () -> new ChickenStickItem(new Item.Properties().setISTER(() -> new Callable() {
+        private final AnimatedChickenStickRenderer renderer = new AnimatedChickenStickRenderer();
+
+        @Override public AnimatedChickenStickRenderer call() throws Exception {
+            return this.renderer;
+        }
+    }).tab(ModItemGroup.ROOST)));*/
     //endregion
 
     //region Essence
@@ -123,15 +129,15 @@ public class ModItems {
 
 
    // //region SEEDS
-    public static final RegistryObject<Item> CHICKEN_FOOD_TIER_1 = ITEMS.register("chicken_food_tier_1", () -> new BlockNamedItem(ModBlocks.SEED_CROP_1.get(), (new Item.Properties()).tab(ModItemGroup.ROOST)));
-    public static final RegistryObject<Item> CHICKEN_FOOD_TIER_2 = ITEMS.register("chicken_food_tier_2", () -> new BlockNamedItem(ModBlocks.SEED_CROP_2.get(), (new Item.Properties()).tab(ModItemGroup.ROOST)));
-    public static final RegistryObject<Item> CHICKEN_FOOD_TIER_3 = ITEMS.register("chicken_food_tier_3", () -> new BlockNamedItem(ModBlocks.SEED_CROP_3.get(), (new Item.Properties()).tab(ModItemGroup.ROOST)));
-    public static final RegistryObject<Item> CHICKEN_FOOD_TIER_4 = ITEMS.register("chicken_food_tier_4", () -> new BlockNamedItem(ModBlocks.SEED_CROP_4.get(), (new Item.Properties()).tab(ModItemGroup.ROOST)));
-    public static final RegistryObject<Item> CHICKEN_FOOD_TIER_5 = ITEMS.register("chicken_food_tier_5", () -> new BlockNamedItem(ModBlocks.SEED_CROP_5.get(), (new Item.Properties()).tab(ModItemGroup.ROOST)));
-    public static final RegistryObject<Item> CHICKEN_FOOD_TIER_6 = ITEMS.register("chicken_food_tier_6", () -> new BlockNamedItem(ModBlocks.SEED_CROP_6.get(), (new Item.Properties()).tab(ModItemGroup.ROOST)));
-    public static final RegistryObject<Item> CHICKEN_FOOD_TIER_7 = ITEMS.register("chicken_food_tier_7", () -> new BlockNamedItem(ModBlocks.SEED_CROP_7.get(), (new Item.Properties()).tab(ModItemGroup.ROOST)));
-    public static final RegistryObject<Item> CHICKEN_FOOD_TIER_8 = ITEMS.register("chicken_food_tier_8", () -> new BlockNamedItem(ModBlocks.SEED_CROP_8.get(), (new Item.Properties()).tab(ModItemGroup.ROOST)));
-    public static final RegistryObject<Item> CHICKEN_FOOD_TIER_9 = ITEMS.register("chicken_food_tier_9", () -> new BlockNamedItem(ModBlocks.SEED_CROP_9.get(), (new Item.Properties()).tab(ModItemGroup.ROOST)));
+    public static final RegistryObject<Item> CHICKEN_FOOD_TIER_1 = ITEMS.register("chicken_food_tier_1", () -> new ChickenSeedBase(ModBlocks.SEED_CROP_1.get(), (new Item.Properties().tab(ModItemGroup.ROOST)), 0));
+    public static final RegistryObject<Item> CHICKEN_FOOD_TIER_2 = ITEMS.register("chicken_food_tier_2", () -> new ChickenSeedBase(ModBlocks.SEED_CROP_2.get(), (new Item.Properties().tab(ModItemGroup.ROOST)), 1));
+    public static final RegistryObject<Item> CHICKEN_FOOD_TIER_3 = ITEMS.register("chicken_food_tier_3", () -> new ChickenSeedBase(ModBlocks.SEED_CROP_3.get(), (new Item.Properties().tab(ModItemGroup.ROOST)), 2));
+    public static final RegistryObject<Item> CHICKEN_FOOD_TIER_4 = ITEMS.register("chicken_food_tier_4", () -> new ChickenSeedBase(ModBlocks.SEED_CROP_4.get(), (new Item.Properties().tab(ModItemGroup.ROOST)), 3));
+    public static final RegistryObject<Item> CHICKEN_FOOD_TIER_5 = ITEMS.register("chicken_food_tier_5", () -> new ChickenSeedBase(ModBlocks.SEED_CROP_5.get(), (new Item.Properties().tab(ModItemGroup.ROOST)), 4));
+    public static final RegistryObject<Item> CHICKEN_FOOD_TIER_6 = ITEMS.register("chicken_food_tier_6", () -> new ChickenSeedBase(ModBlocks.SEED_CROP_6.get(), (new Item.Properties().tab(ModItemGroup.ROOST)), 5));
+    public static final RegistryObject<Item> CHICKEN_FOOD_TIER_7 = ITEMS.register("chicken_food_tier_7", () -> new ChickenSeedBase(ModBlocks.SEED_CROP_7.get(), (new Item.Properties().tab(ModItemGroup.ROOST)), 6));
+    public static final RegistryObject<Item> CHICKEN_FOOD_TIER_8 = ITEMS.register("chicken_food_tier_8", () -> new ChickenSeedBase(ModBlocks.SEED_CROP_8.get(), (new Item.Properties().tab(ModItemGroup.ROOST)), 7));
+    public static final RegistryObject<Item> CHICKEN_FOOD_TIER_9 = ITEMS.register("chicken_food_tier_9", () -> new ChickenSeedBase(ModBlocks.SEED_CROP_9.get(), (new Item.Properties().tab(ModItemGroup.ROOST)), 8));
    // //endregion
 
 

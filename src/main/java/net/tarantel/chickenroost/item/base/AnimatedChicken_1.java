@@ -51,43 +51,38 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-public class AnimatedChicken_1 extends ChickenItemBase implements IAnimatable, ISyncable {
+public class AnimatedChicken_1 extends ChickenItemBase implements IAnimatable {
 
     private String localpath;
     public int currentchickena;
+
     public AnimationFactory factory = GeckoLibUtil.createFactory(this);
-
-    private static final String CONTROLLER_NAME = "popupController";
-    private static final int ANIM_OPEN = 0;
-
-
-
-    public AnimatedChicken_1(Properties properties, String path, int currentchicken) {
-        super(properties, currentchicken);
-        this.localpath = path;
-        this.currentchickena = currentchicken;
-        //GeckoLibNetwork.registerSyncable(this);
-    }
-    public String getLocalpath() {
-        return localpath;
-    }
-
     @Override
     public void registerControllers(AnimationData data) {
-        AnimationController<AnimatedChicken_1> controller = new AnimationController<AnimatedChicken_1>(this, CONTROLLER_NAME, 20, this::predicate);
-
-        controller.registerSoundListener(this::soundListener);
-        data.addAnimationController(controller);
-    }
-
-    private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
-        ClientPlayerEntity player = Minecraft.getInstance().player;
+        data.addAnimationController(new AnimationController<>(this, "controller", 0, this::predicate));
     }
 
     @Override
     public AnimationFactory getFactory() {
         return this.factory;
     }
+    private static final AnimationBuilder IDLE = new AnimationBuilder().loop("idle");
+    private <P extends Item & IAnimatable> PlayState predicate(AnimationEvent<P> event) {
+        // Not setting an animation here as that's handled below
+        event.getController().setAnimation(IDLE);
+        return PlayState.CONTINUE;
+    }
+
+
+    public AnimatedChicken_1(Properties properties, String path, int currentchicken) {
+        super(properties, currentchicken);
+        this.localpath = path;
+        this.currentchickena = currentchicken;
+    }
+    public String getLocalpath() {
+        return localpath;
+    }
+
 
     public static BlockPos rightposi(BlockPos blockPos, Direction direction)
     {
@@ -102,10 +97,6 @@ public class AnimatedChicken_1 extends ChickenItemBase implements IAnimatable, I
         return new BlockPos(X, Y, Z);
     }
 
-    private <P extends Item & IAnimatable> PlayState predicate(AnimationEvent<P> event) {
-        // Not setting an animation here as that's handled below
-        return PlayState.CONTINUE;
-    }
 
 
     @Override
@@ -137,8 +128,6 @@ public class AnimatedChicken_1 extends ChickenItemBase implements IAnimatable, I
                     if(entity.getPersistentData().contains("roost_xp")){
                         entity.getPersistentData().putInt("roost_xp", itemstack.getOrCreateTag().getInt("roost_xp"));
                     }
-                    //entity.getPersistentData().putInt("roost_lvl", itemstack.getOrCreateTag().getInt("roost_lvl"));
-                    //entity.getPersistentData().putInt("roost_xp", itemstack.getOrCreateTag().getInt("roost_xp"));
                     if(!player.isCreative()) {
                             itemstack.shrink(1);
                         }
@@ -161,8 +150,6 @@ public class AnimatedChicken_1 extends ChickenItemBase implements IAnimatable, I
                     if(entity.getPersistentData().contains("roost_xp")){
                         entity.getPersistentData().putInt("roost_xp", itemstack.getOrCreateTag().getInt("roost_xp"));
                     }
-                    //entity.getPersistentData().putInt("roost_lvl", itemstack.getOrCreateTag().getInt("roost_lvl"));
-                    //entity.getPersistentData().putInt("roost_xp", itemstack.getOrCreateTag().getInt("roost_xp"));
                     if(!player.isCreative()) {
                             itemstack.shrink(1);
                         }
@@ -172,69 +159,10 @@ public class AnimatedChicken_1 extends ChickenItemBase implements IAnimatable, I
                     System.out.println("UseOn");
                 }
             }
-            //EntityType<?> entitytype = (BuiltInRegistries.ENTITY_TYPE.get(ResourceLocation.parse(context.getItemInHand().getItem().getDefaultInstance().getItemHolder().getRegisteredName().toString())));
-
 
             return ActionResultType.CONSUME;
         }
     }
-
-    /*@Override
-    public ActionResult<ItemStack> use(World level, PlayerEntity player, Hand hand) {
-        ItemStack itemstack = player.getItemInHand(hand);
-        BlockRayTraceResult blockhitresult = getPlayerPOVHitResult(level, player, RayTraceContext.FluidMode.SOURCE_ONLY);
-        if (blockhitresult.getType() != RayTraceResult.Type.BLOCK) {
-            return ActionResult.pass(itemstack);
-        } else if (!(level instanceof ServerWorld)) {
-            return ActionResult.success(itemstack);
-        } else {
-            BlockPos blockpos = new BlockPos(blockhitresult.getLocation());
-            if (!(level.getBlockState(blockpos).getBlock() instanceof FlowingFluidBlock)) {
-                return ActionResult.pass(itemstack);
-            } else if (level.mayInteract(player, blockpos) && player.mayUseItemAt(blockpos, blockhitresult.getDirection(), itemstack)) {
-                if (ItemTags.getAllTags().getTagOrEmpty(new ResourceLocation("c:roost/mobs")).contains(itemstack.getItem())) {
-                    EntityType<?> entitytype = (ForgeRegistries.ENTITIES.getValue(player.getItemInHand(hand).getItem().getRegistryName()));
-                    Entity entity = entitytype.spawn((ServerWorld) level, itemstack, player, blockpos, SpawnReason.SPAWN_EGG, false, false);
-                    if (entity == null) {
-                        return ActionResult.pass(itemstack);
-                    } else {
-                        entity.getPersistentData().putInt("roost_lvl", itemstack.getOrCreateTag().getInt("roost_lvl"));
-                        entity.getPersistentData().putInt("roost_xp", itemstack.getOrCreateTag().getInt("roost_xp"));
-                        if(!player.isCreative()) {
-                            itemstack.shrink(1);
-                        }
-                        player.awardStat(Stats.ITEM_USED.get(this));
-                        //level.gameEvent(player, GameEvent.ENTITY_PLACE, entity.position());
-                        CriteriaTriggers.SUMMONED_ENTITY.trigger((ServerPlayerEntity) player, entity);
-                        entity.setUUID(UUID.randomUUID()); // Ensure a unique UUID
-                        level.addFreshEntity(entity);
-                        return ActionResult.consume(itemstack);
-                    }
-                }
-                else {
-                    EntityType<?> entitytype = (ForgeRegistries.ENTITIES.getValue(new ResourceLocation("minecraft:chicken")));
-                    Entity entity = entitytype.spawn((ServerWorld) level, itemstack, player, blockpos, SpawnReason.SPAWN_EGG, false, false);
-                    if (entity == null) {
-                        return ActionResult.pass(itemstack);
-                    } else {
-                        entity.getPersistentData().putInt("roost_lvl", itemstack.getOrCreateTag().getInt("roost_lvl"));
-                        entity.getPersistentData().putInt("roost_xp", itemstack.getOrCreateTag().getInt("roost_xp"));
-                        if(!player.isCreative()) {
-                            itemstack.shrink(1);
-                        }
-                        player.awardStat(Stats.ITEM_USED.get(this));
-                        entity.setUUID(UUID.randomUUID()); // Ensure a unique UUID
-                        level.addFreshEntity(entity);
-                        //level.gameEvent(player, GameEvent.ENTITY_PLACE, entity.position());
-                        System.out.println("Use");
-                        return ActionResult.consume(itemstack);
-                    }
-                }
-            } else {
-                return ActionResult.fail(itemstack);
-            }
-        }
-    }*/
 
     @Override
     public void appendHoverText(ItemStack itemstack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag) {
@@ -245,24 +173,4 @@ public class AnimatedChicken_1 extends ChickenItemBase implements IAnimatable, I
         super.appendHoverText(itemstack, world, list, flag);
     }
 
-
-    @Override
-    public void onAnimationSync(int id, int state) {
-        if (state == ANIM_OPEN) {
-            // Always use GeckoLibUtil to get AnimationControllers when you don't have
-            // access to an AnimationEvent
-            final AnimationController<?> controller = GeckoLibUtil.getControllerForID(this.factory, id, CONTROLLER_NAME);
-
-            if (controller.getAnimationState() == AnimationState.Stopped) {
-                final ClientPlayerEntity player = Minecraft.getInstance().player;
-                // If you don't do this, the popup animation will only play once because the
-                // animation will be cached.
-                controller.markNeedsReload();
-                // Set the animation to open the JackInTheBoxItem which will start playing music
-                // and
-                // eventually do the actual animation. Also sets it to not loop
-                controller.setAnimation(new AnimationBuilder().addAnimation("Soaryn_chest_popup", ILoopType.EDefaultLoopTypes.PLAY_ONCE));
-            }
-        }
-    }
 }
