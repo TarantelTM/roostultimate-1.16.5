@@ -11,12 +11,34 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.tarantel.chickenroost.util.ChickenStickTool;
 import net.tarantel.chickenroost.util.WrenchTool;
+import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.PlayState;
+import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
+import software.bernie.geckolib3.core.manager.AnimationData;
+import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib3.util.GeckoLibUtil;
 
-public class ChickenStickItem extends Item {
-	public ChickenStickItem() {
-		super(new Item.Properties().durability(16).rarity(Rarity.COMMON));
+public class ChickenStickItem extends Item implements IAnimatable {
+	public ChickenStickItem(Properties properties) {
+		super(properties);
+	}
+	public AnimationFactory factory = GeckoLibUtil.createFactory(this);
+	@Override
+	public void registerControllers(AnimationData data) {
+		data.addAnimationController(new AnimationController<>(this, "controller", 0, this::predicate));
 	}
 
+	@Override
+	public AnimationFactory getFactory() {
+		return this.factory;
+	}
+	private static final AnimationBuilder IDLE = new AnimationBuilder().loop("idle");
+	private <P extends Item & IAnimatable> PlayState predicate(AnimationEvent<P> event) {
+		event.getController().setAnimation(IDLE);
+		return PlayState.CONTINUE;
+	}
 
 	@Override
 	public UseAction getUseAnimation(ItemStack itemstack) {

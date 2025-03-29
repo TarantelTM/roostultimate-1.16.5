@@ -57,60 +57,7 @@ public class Breeder_Tile extends TileEntity implements ITickableTileEntity {
         this(ModTileEntities.BREEDER_TILE.get());
     }
 
-    @Override
-    public void load(BlockState state, CompoundNBT nbt) {
-        itemHandler.deserializeNBT(nbt.getCompound("inv"));
-        progress = nbt.getInt("breeder.progress");
-        sendUpdates();
-        super.load(state, nbt);
-    }
-    /*@Override
-    public void handleUpdateTag(BlockState state, CompoundNBT tag) {
-        super.handleUpdateTag(state, tag);
-        itemHandler.deserializeNBT(tag.getCompound("inv"));
-    }*/
 
-    @Nullable
-    @Override
-    public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(getBlockPos(), 1, itemHandler.serializeNBT());
-    }
-
-    @Override
-    public CompoundNBT getUpdateTag() {
-        CompoundNBT nbt=super.getUpdateTag();
-        nbt.put("inv", itemHandler.serializeNBT());
-        return nbt;
-    }
-    /*@Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        CompoundNBT tag = pkt.getTag();
-        handleUpdateTag(getBlockState(), tag);
-    }*/
-    @Override
-    public CompoundNBT save(CompoundNBT compound) {
-        compound.put("inv", itemHandler.serializeNBT());
-        compound.putInt("breeder.progress", this.progress);
-        return super.save(compound);
-    }
-    private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
-
-    @Override
-    public void onLoad() {
-        super.onLoad();
-        lazyItemHandler = LazyOptional.of(() -> itemHandler);
-        setChanged();
-        if(!level.isClientSide()) {
-            setChanged();
-        }
-
-    }
-    public void sendUpdates() {
-        if (this.level == null) return;
-        this.level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
-        this.level.updateNeighborsAt(getBlockPos(), this.getBlockState().getBlock());
-        setChanged();
-    }
     public void setHandler(ItemStackHandler itemStackHandler) {
         for (int i = 0; i < itemStackHandler.getSlots(); i++) {
             itemHandler.setStackInSlot(i, itemStackHandler.getStackInSlot(i));
@@ -423,5 +370,50 @@ public class Breeder_Tile extends TileEntity implements ITickableTileEntity {
         }
 
         return recipe.isPresent();
+    }
+
+
+    @Override
+    public void load(BlockState state, CompoundNBT nbt) {
+        itemHandler.deserializeNBT(nbt.getCompound("inv"));
+        progress = nbt.getInt("breeder.progress");
+        sendUpdates();
+        super.load(state, nbt);
+    }
+    @Nullable
+    @Override
+    public SUpdateTileEntityPacket getUpdatePacket() {
+        return new SUpdateTileEntityPacket(getBlockPos(), 1, itemHandler.serializeNBT());
+    }
+
+    @Override
+    public CompoundNBT getUpdateTag() {
+        CompoundNBT nbt=super.getUpdateTag();
+        nbt.put("inv", itemHandler.serializeNBT());
+        return nbt;
+    }
+    @Override
+    public CompoundNBT save(CompoundNBT compound) {
+        compound.put("inv", itemHandler.serializeNBT());
+        compound.putInt("breeder.progress", this.progress);
+        return super.save(compound);
+    }
+    private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        lazyItemHandler = LazyOptional.of(() -> itemHandler);
+        setChanged();
+        if(!level.isClientSide()) {
+            setChanged();
+        }
+
+    }
+    public void sendUpdates() {
+        if (this.level == null) return;
+        this.level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+        this.level.updateNeighborsAt(getBlockPos(), this.getBlockState().getBlock());
+        setChanged();
     }
 }

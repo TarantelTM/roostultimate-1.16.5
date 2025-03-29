@@ -5,8 +5,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.BlockItemUseContext;
@@ -14,10 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.state.DirectionProperty;
-import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.stats.Stats;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
@@ -28,12 +23,8 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.network.NetworkHooks;
-import net.tarantel.chickenroost.block.tile.Breeder_Tile;
-import net.tarantel.chickenroost.block.tile.Extractor_Tile;
 import net.tarantel.chickenroost.block.tile.ModTileEntities;
 import net.tarantel.chickenroost.block.tile.Trainer_Tile;
-import net.tarantel.chickenroost.container.Breeder_Container;
-import net.tarantel.chickenroost.container.Extractor_Container;
 import net.tarantel.chickenroost.container.Trainer_Container;
 
 import javax.annotation.Nullable;
@@ -171,16 +162,15 @@ public class Trainer_Block extends Block {
 
     @Override
     public BlockRenderType getRenderShape(BlockState state) {
-        return BlockRenderType.ENTITYBLOCK_ANIMATED;
+        return BlockRenderType.MODEL;
     }
     @Override
     public boolean hasTileEntity(BlockState state) {
         return true;
     }
 
-    @Nullable
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new Trainer_Tile();
+        return ModTileEntities.TRAINER_TILE.get().create();
     }
 }

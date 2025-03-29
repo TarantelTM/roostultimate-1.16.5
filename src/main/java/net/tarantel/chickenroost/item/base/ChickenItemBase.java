@@ -6,7 +6,7 @@ import net.minecraft.item.Item;
 public class ChickenItemBase extends RoostUltimateItem {
 
     public int currentchickena;
-    public ChickenItemBase(Item.Properties properties, int currentchicken) {
+    public ChickenItemBase(Properties properties, int currentchicken) {
         super(properties);
         this.currentchickena = currentchicken;
     }

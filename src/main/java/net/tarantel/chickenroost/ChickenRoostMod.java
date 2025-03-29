@@ -32,6 +32,7 @@ import net.tarantel.chickenroost.container.*;
 import net.tarantel.chickenroost.entity.ModEntities;
 import net.tarantel.chickenroost.entity.render.ModEntityRenderers;
 import net.tarantel.chickenroost.item.ModItems;
+import net.tarantel.chickenroost.network.NetworkHandler;
 import net.tarantel.chickenroost.recipes.ModRecipeTypes;
 import net.tarantel.chickenroost.util.Config;
 import org.apache.logging.log4j.LogManager;
@@ -67,6 +68,7 @@ public class ChickenRoostMod
         ModContainers.register(eventBus);
         ModRecipeTypes.register(eventBus);
         ModEntities.register(eventBus);
+        NetworkHandler.registerMessages();
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
     }
